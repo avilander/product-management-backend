@@ -1,0 +1,75 @@
+version: "4.0"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: appdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: cloudbeaver
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "8978:8978"
+    volumes:
+      - cloudbeaver_data:/opt/cloudbeaver/workspace
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    ports:
+      - "5672:5672"   # Porta de conexão das aplicações
+      - "15672:15672" # Painel de administração (Web UI)
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  productmanagement.api:
+    build:
+      context: ./src                            # 👈 raiz da solução
+      dockerfile: ProductManagement.Api/Dockerfile
+    container_name: productmanagement-api
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=appdb;Username=dev;Password=devpassword;"
+      RabbitMq__HostName: "rabbitmq"
+      RabbitMq__UserName: "admin"
+      RabbitMq__Password: "admin"
+    ports:
+      - "5000:8080"
+  
+  productmanagement.worker:
+    build:
+      context: ./src
+      dockerfile: ProductManagement.Worker/Dockerfile
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=appdb;Username=dev;Password=devpassword;"
+      RabbitMq__HostName: "rabbitmq"
+      RabbitMq__UserName: "admin"
+      RabbitMq__Password: "admin"
+
+volumes:
+  postgres_data:
+  cloudbeaver_data:
+  rabbitmq_data:
+
