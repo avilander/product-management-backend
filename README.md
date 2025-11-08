@@ -249,6 +249,14 @@ dotnet run --project src/ProductManagement.Worker
 
 ---
 
+## **🌐 Endpoints**
+
+Base URL (local): http://localhost:5000
+
+![alt text](image.png)
+
+---
+
 ## 📦 **Migrations**
 
 ### Criar migration:
