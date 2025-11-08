@@ -231,6 +231,22 @@ ProductManagement/
 
 ---
 
+## 🧠 Por que utilizar UseCases?
+
+Os **Use Cases** (Casos de Uso) são uma peça fundamental na **Clean Architecture**. Eles representam a **regra de negócio** central da aplicação — aquilo que o sistema realmente precisa fazer, independentemente de frameworks, bancos ou interfaces.
+
+### Benefícios dos Use Cases:
+
+- **Separação clara de responsabilidades:** o domínio da aplicação não depende da infraestrutura.
+- **Facilidade de teste:** como são classes simples, sem dependência direta de banco, é possível testar cada fluxo isoladamente com mocks.
+- **Evolução segura:** mudar o banco (ex: Postgres → Mongo) ou a UI (Angular → React) não afeta a lógica de negócio.
+- **Reuso:** a mesma regra de negócio pode ser exposta via REST, gRPC ou filas sem duplicar código.
+- **Legibilidade:** cada caso de uso expressa exatamente o que o sistema faz — `CreateProductUseCase`, `DeleteProductUseCase`, etc.
+
+Em resumo, os *Use Cases* encapsulam o comportamento essencial da aplicação, garantindo **coesão**, **baixo acoplamento** e **flexibilidade de manutenção**.
+
+---
+
 ## 🔧 **Build Manual**
 
 Se quiser compilar e rodar localmente (sem Docker):
