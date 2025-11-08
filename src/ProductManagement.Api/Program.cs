@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using ProductManagement.Infrastructure.Persistence;
-using ProductManagement.Infrastructure.IoC;
+using Microsoft.Extensions.Options;
 using ProductManagement.Application.IoC;
+using ProductManagement.Infrastructure.IoC;
+using ProductManagement.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,21 @@ builder.Services.AddRabbitMq(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+const string FrontendCorsPolicy = "FrontendCorsPolicy";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(FrontendCorsPolicy, policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:4200") // Angular dev
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        // Se tiver auth com cookies: .AllowCredentials();
+    });
+});
 
 var app = builder.Build();
 
@@ -27,6 +43,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(FrontendCorsPolicy);
 
 app.UseHttpsRedirection();
 

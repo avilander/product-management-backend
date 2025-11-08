@@ -24,3 +24,4 @@ tests/ProductManagement.Infrastructure.Tests/obj/*
 tests/ProductManagement.Worker.Tests/obj/*
 tests/ProductManagement.Worker.Tests/bin/*
 obj/ProductManagement.Infrastructure.EntityFrameworkCore.targets
+src/ProductManagement.Api.Tests/obj/ProductManagement.Api.Tests.csproj.nuget.g.props
